@@ -32,7 +32,7 @@ class Request(BaseModel):
 
 
 class AllModelsResponse(BaseModel):
-    output: List[str]
+    output: str
 
 
 @app.post("/predict", response_model=AllModelsResponse)
@@ -42,7 +42,7 @@ async def predict(request: Request):
     generated = torch.tensor(tokenizer.encode(prompt)).unsqueeze(0)
     generated = generated.to(device)
 
-    output = []
+    # output = []
     # generate 10 samples
     sample_outputs = model.generate(
         generated,
@@ -53,12 +53,12 @@ async def predict(request: Request):
         top_p=0.7,
         temperature=0.9,
         repetition_penalty=2.0,
-        num_return_sequences=10,
+        num_return_sequences=1,
     )
 
-    for i, sample_output in enumerate(sample_outputs):
-        text = tokenizer.decode(sample_output, skip_special_tokens=True)
-        output.append(text)
+    # for i, sample_output in enumerate(sample_outputs):
+    output = tokenizer.decode(sample_outputs[0], skip_special_tokens=True)
+        # output.append(text)
 
     response = AllModelsResponse(output=output)
     return response
