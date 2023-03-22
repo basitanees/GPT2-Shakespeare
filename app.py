@@ -37,7 +37,8 @@ class AllModelsResponse(BaseModel):
 
 @app.post("/predict", response_model=AllModelsResponse)
 async def predict(request: Request):
-    prompt = SPECIAL_TOKENS["bos_token"] + request.text
+    # prompt = SPECIAL_TOKENS["bos_token"] + request.text
+    prompt = request.text
     generated = torch.tensor(tokenizer.encode(prompt)).unsqueeze(0)
     generated = generated.to(device)
 
